@@ -1,0 +1,16 @@
+cff-version: 1.2.0
+title: FAST SDK
+message: >-
+  If you reference this software in a publication, please
+  cite it as below.
+type: software
+authors:
+  - name: Museum of Science, Boston
+    website: 'https://www.mos.org'
+repository-code: >-
+  https://github.com/FAST-Digital-Exhibit-Design/FAST-SDK
+abstract: >-
+  A software development kit for creating FAST digital exhibit experiences
+  in Unity.
+license: MIT
+version: 1.0.0

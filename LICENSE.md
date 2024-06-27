@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2024 FAST Digital Exhibit Design - Museum of Science, Boston
+Copyright (c) 2024 Museum of Science, Boston
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

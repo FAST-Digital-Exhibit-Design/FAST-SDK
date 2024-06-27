@@ -1,0 +1,16 @@
+{
+  "name": "org.mos.fast-sdk",
+  "version": "1.0.0",
+  "displayName": "FAST SDK",
+  "description": "A software development kit for museum professionals to quickly develop accessible digital tabletop interactives for educational purposes.",
+  "unity": "2022.3",
+  "author": {
+    "name": "Museum of Science, Boston",
+    "url": "https://www.mos.org"
+  },
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.0",
+    "com.unity.2d.sprite": "1.0.0",
+    "com.dbrizov.naughtyattributes": "2.1.4"
+  }
+}
