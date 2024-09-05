@@ -1,6 +1,6 @@
 {
   "name": "org.mos.fast-sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "displayName": "FAST SDK",
   "description": "A software development kit for museum professionals to quickly develop accessible digital tabletop interactives for educational purposes.",
   "unity": "2022.3",
