@@ -18,8 +18,10 @@ efficiency and accessibility is at the center of FAST.
 
 For more information about FAST, please see:
 
-* FAST Booklet, an introduction and explination of the FAST project
-* FAST Toolkit, a repository off all assets and documentation published from the FAST project
+* [FAST Booklet](https://mos.widen.net/s/gkftj8tgl8/fast_booklet), an 
+introduction and explanation of the FAST project
+* [FAST Toolkit](https://mos.widencollective.com/portals/zh7gauqj/FASTPublicPortal), 
+a portal for all assets and documentation published from the FAST project
 
 ## System Requirements
 
@@ -91,7 +93,7 @@ If you reference this software in a publication, please cite it as follows:
 
 **APA**
 ```
-Museum of Science, Boston. FAST SDK (Version 1.0.0) [Computer software]. https://github.com/FAST-Digital-Exhibit-Design/FAST-SDK
+Museum of Science, Boston. FAST SDK [Computer software]. https://github.com/FAST-Digital-Exhibit-Design/FAST-SDK
 ```
 
 **BibTeX**
@@ -100,8 +102,7 @@ Museum of Science, Boston. FAST SDK (Version 1.0.0) [Computer software]. https:/
 author = {{Museum of Science, Boston}},
 license = {MIT},
 title = {{FAST SDK}},
-url = {https://github.com/FAST-Digital-Exhibit-Design/FAST-SDK},
-version = {1.0.0}
+url = {https://github.com/FAST-Digital-Exhibit-Design/FAST-SDK}
 }
 ```
 
