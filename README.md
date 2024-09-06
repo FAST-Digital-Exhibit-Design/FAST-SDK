@@ -78,7 +78,8 @@ For more infomation about installing Unity packages, see:
 
 ## Documentation
 
-See the [Reference Manual](https://FAST-Digital-Exhibit-Design.github.io/FAST-SDK-Documentation/)
+* [Developer Guide](https://github.com/FAST-Digital-Exhibit-Design/FAST-SDK/wiki)
+* [Coding Reference](https://FAST-Digital-Exhibit-Design.github.io/FAST-SDK-Documentation/)
 
 ## Contributions
 
