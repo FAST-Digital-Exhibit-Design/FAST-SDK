@@ -57,10 +57,10 @@ namespace FAST
         /// The directory with the installation file structure to use while developing in the Unity Editor.
         /// </summary>
         /// <remarks>
-        /// The path can be absolute or relative to the Unity project folder.
+        /// The path can be absolute or relative to the Unity project folder and can include Environment variables.
         /// </remarks>
         [NaughtyAttributes.InfoBox("This directory is required in the Editor. " +
-         "The path can be absolute or relative to the Unity project folder."),
+         "The path can be absolute or relative to the Unity project folder and can include Environment variables."),
          SerializeField, Header("Required"),
          Tooltip("A directory with the installation file structure to use while developing in the Unity Editor."),
          ContextMenuItem("Select Directory as Relative Path", "SelectEditorInstallDirectoryAsRelativePath", order = 0),
@@ -100,7 +100,7 @@ namespace FAST
             string currentDirectory;
 #if UNITY_EDITOR
             try {
-                currentDirectory = Path.GetFullPath(editorInstallDirectory);
+                currentDirectory = Path.GetFullPath(Environment.ExpandEnvironmentVariables(editorInstallDirectory));
             }
             catch {
                 errorTitle = "Editor configuration incomplete!";
