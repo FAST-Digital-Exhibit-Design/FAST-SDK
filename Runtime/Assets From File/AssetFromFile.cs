@@ -275,22 +275,34 @@ namespace FAST
             }
         }
 
-       // <summary>
-       // Replaces the specified hashtag in a name with a different string. 
-       // Used by <see cref="FAST.AssetFromFile.UpdateFileName(string)"/>
-       // </summary>
-       // <param name="name">A file name or part of a file name.</param>
-       // <param name="tag">A hashtag to find and replace.</param>
-       // <param name="replacement">A string to replace the hashtag.</param>
-       // <returns>A new string with the hashtag replaced.</returns>
-       // <remarks>
-       // <para>
-       // See <see cref="FAST.AssetFromFile.kProductNameTag"/>,
-       // <see cref="FAST.AssetFromFile.kSkinTag"/>,
-       // <see cref="FAST.AssetFromFile.kLanguageTag"/>
-       // for more info about hashtags.
-       // </para>
-       // </remarks>
+        /// <summary>
+        /// Call this to log an error when an <see cref="FAST.AssetFromFile"/> cannot be loaded.
+        /// </summary>
+        protected void LogAssetNotLoadedError()
+        {
+            string errorTitle = "Asset not loaded!";
+            string errorMessage = $"The {fileName} asset could not be loaded. Usually this is because the file cannot be found. " +
+                $"Check the {this.GetType().Name} component on the {gameObject.name} game object to verify that the asset's file name matches the File Name property. " +
+                "Any dependent components on this game object have been disabled.";
+            Debug.LogError($"[ERROR] {errorTitle}\n{errorMessage}\n");
+        }
+
+        // <summary>
+        // Replaces the specified hashtag in a name with a different string. 
+        // Used by <see cref="FAST.AssetFromFile.UpdateFileName(string)"/>
+        // </summary>
+        // <param name="name">A file name or part of a file name.</param>
+        // <param name="tag">A hashtag to find and replace.</param>
+        // <param name="replacement">A string to replace the hashtag.</param>
+        // <returns>A new string with the hashtag replaced.</returns>
+        // <remarks>
+        // <para>
+        // See <see cref="FAST.AssetFromFile.kProductNameTag"/>,
+        // <see cref="FAST.AssetFromFile.kSkinTag"/>,
+        // <see cref="FAST.AssetFromFile.kLanguageTag"/>
+        // for more info about hashtags.
+        // </para>
+        // </remarks>
         private string ReplaceTagInName(string name, string tag, string replacement)
         {
             if (name.Contains(tag)) {

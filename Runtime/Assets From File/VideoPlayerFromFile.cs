@@ -123,6 +123,8 @@ namespace FAST
                 videoPlayer.clip = null;
                 videoPlayer.source = VideoSource.VideoClip;
                 videoPlayer.enabled = false;
+
+                LogAssetNotLoadedError();
             }
         }
     }

@@ -94,6 +94,7 @@ namespace FAST
             }
             else {
                 audioClip = null;
+                LogAssetNotLoadedError();
             }
         }
     }

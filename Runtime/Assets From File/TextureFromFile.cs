@@ -26,7 +26,6 @@
 using System.Collections;
 using System.IO;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEditor;
 
 namespace FAST
@@ -93,6 +92,7 @@ namespace FAST
             }
             else {
                 texture = null;
+                LogAssetNotLoadedError();
             }
         }
     }

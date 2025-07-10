@@ -182,6 +182,77 @@ namespace FAST
             else {
                 imagePlayer.uiImage.sprite = null;
                 imagePlayer.uiImage.enabled = false;
+
+                LogAssetNotLoadedError();
+            }
+        }
+
+        /// @copydoc FAST.AssetFromFile.Load()
+        /// <summary>
+        /// <inheritdoc cref="FAST.AssetFromFile.Load(string)"/> Loading is performed in a coroutine so it doesn't block execution.
+        /// </summary>
+        /// <remarks>
+        /// <see cref="FAST.ImageFromFile.imageSettings"/> are used to load the image sequence asset as a 
+        /// <c style="color:DarkRed;"><see cref="Sprite"/></c>[] into <see cref="FAST.ImagePlayerFromFile.imagePlayer"/>. 
+        /// The <see cref="FAST.ImagePlayer.uiImage"/> of <see cref="FAST.ImagePlayerFromFile.imagePlayer"/> is 
+        /// also initialized with the first element of the <c style="color:DarkRed;"><see cref="Sprite"/></c>[].
+        /// </remarks>
+        public IEnumerator LoadCoroutine(string language)
+        {
+            if (isSharedByAllLanguages) {
+                language = kSharedLanguage;
+            }
+            if (imagePlayer == null) {
+                imagePlayer = GetComponent<ImagePlayer>();
+            }
+
+            var assets = Application.assets;
+            bool isAssetAvailable = false;
+            List<Sprite> sprites = new();
+            int index = 0;
+            int numDigits = baseFileName.Length - baseFileName.Replace("#", "").Length;
+            string kIndexTag = new('#', numDigits);
+            if (assets.ContainsKey(language)) {
+                do {
+                    UpdateFileName(language);
+                    if (fileName.Contains("#")) {
+                        string paddedIndex = index.ToString($"D{numDigits}");
+                        fileName = fileName.Replace(kIndexTag, paddedIndex);
+                        isAssetAvailable = assets[language].ContainsKey(fileName);
+                        if (isAssetAvailable) {
+                            Texture2D texture = assets[language][fileName] as Texture2D;
+                            Sprite sprite = Sprite.Create(
+                                    texture,
+                                    new Rect(0, 0, texture.width, texture.height),
+                                    imageSettings.spritePivot,
+                                    imageSettings.spritePixelsPerUnit,
+                                    imageSettings.spriteExtrude,
+                                    imageSettings.spriteMeshType,
+                                    imageSettings.spriteBorder);
+                            sprite.name = fileName;
+                            sprites.Add(sprite);
+
+                            index++;
+                            yield return null;
+                        }
+                    }
+                } while (isAssetAvailable);
+            }
+
+            if (sprites.Count > 0) {
+                imagePlayer.sprites = sprites.ToArray();
+                imagePlayer.uiImage.sprite = sprites[0];
+
+                if (imageSettings.loadImageAtNativeSize) {
+                    imagePlayer.uiImage.SetNativeSize();
+                }
+                imagePlayer.uiImage.enabled = true;
+            }
+            else {
+                imagePlayer.uiImage.sprite = null;
+                imagePlayer.uiImage.enabled = false;
+
+                LogAssetNotLoadedError();
             }
         }
     }

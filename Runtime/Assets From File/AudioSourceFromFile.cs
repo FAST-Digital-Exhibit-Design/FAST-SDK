@@ -118,6 +118,8 @@ namespace FAST
             else {
                 audioSource.clip = null;
                 audioSource.enabled = false;
+
+                LogAssetNotLoadedError();
             }
         }
     }
