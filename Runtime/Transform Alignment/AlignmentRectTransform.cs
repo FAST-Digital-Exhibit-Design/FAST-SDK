@@ -77,14 +77,14 @@ namespace FAST
             }
 
             rectTransform = transform as RectTransform;
-            initialPosition = rectTransform.position;
+            initialPosition = rectTransform.anchoredPosition;
             initialRotation = rectTransform.rotation;
             initialScale = rectTransform.localScale;
             initialSize = rectTransform.sizeDelta;
         }
         protected override void Update()
         {
-            rectTransform.position = initialPosition + (parentCanvas.transform.localScale.x * offsetPosition);
+            rectTransform.anchoredPosition = initialPosition + offsetPosition;
             Quaternion rotationQuaternion = Quaternion.AngleAxis(offsetRotation, Vector3.forward);
             rectTransform.rotation = rotationQuaternion * initialRotation;
             rectTransform.localScale = initialScale * (1f + offsetScale);
