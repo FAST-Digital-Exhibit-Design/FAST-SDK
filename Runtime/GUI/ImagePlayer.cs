@@ -149,15 +149,17 @@ namespace FAST
         /// <b style="color: DarkCyan;">Runtime</b><br/>
         /// Indicates the image squence is playing if <see langword="true"/>. 
         /// </summary>
+        public bool IsPlaying { get => _isPlaying; }
         [SerializeField]
-        private bool isPlaying;
+        private bool _isPlaying = false;
 
         /// <summary>
         /// <b style="color: DarkCyan;">Runtime</b><br/>
         /// Indicates the image squence is paused if <see langword="true"/>. 
         /// </summary>
+        public bool IsPaused { get => _isPaused; }
         [SerializeField]
-        private bool isPaused;
+        private bool _isPaused = false;
 
         /// <summary>
         /// <b style="color: DarkCyan;">Inspector, Runtime</b><br/>
@@ -176,8 +178,8 @@ namespace FAST
         {
             uiImage = GetComponent<Image>();
 
-            isPlaying = false;
-            isPaused = false;
+            _isPlaying = false;
+            _isPaused = false;
 
             frameCount = sprites.Length;
             frameTime = 1f / frameRate;
@@ -199,7 +201,7 @@ namespace FAST
         /// </summary>
         public void Play()
         {
-            if (!isPaused) {
+            if (!_isPaused) {
                 Stop();
 
                 frameCount = sprites.Length;
@@ -210,18 +212,18 @@ namespace FAST
                 }
             }
             else {
-                isPaused = false;
+                _isPaused = false;
             }
         }
         private IEnumerator PlayImages()
         {
-            isPlaying = true;
+            _isPlaying = true;
             do {
                 currentFrame = 0;
                 currentTime = 0;
                 uiImage.color = Color.white;
                 while (currentTime < totalTime) {
-                    if (!isPaused) {
+                    if (!_isPaused) {
                         currentTime += Time.deltaTime;
                         if (currentTime > frameTime * (currentFrame + 1)) {
                             if (skipOnDrop) {
@@ -241,7 +243,7 @@ namespace FAST
                 uiImage.color = Color.clear;
             }
 
-            isPlaying = false;
+            _isPlaying = false;
         }
 
         /// <summary>
@@ -249,7 +251,7 @@ namespace FAST
         /// </summary>
         public void Pause()
         {
-            isPaused = true;
+            _isPaused = true;
         }
 
         /// <summary>
@@ -261,8 +263,8 @@ namespace FAST
                 StopCoroutine(playbackCoroutine);
             }
             
-            isPlaying = false;
-            isPaused = false;
+            _isPlaying = false;
+            _isPaused = false;
 
             currentFrame = 0;
             currentTime = 0f;
