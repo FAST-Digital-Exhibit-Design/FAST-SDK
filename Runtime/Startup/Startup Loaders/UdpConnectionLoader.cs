@@ -55,6 +55,11 @@ namespace FAST
         [SerializeField]
         private int maxAttempts = 3;
 
+        [Header("Loaded from settings")]
+        public string prefixErrorMessage = string.Empty;
+        public string replacementErrorMessage = string.Empty;
+        public string suffixErrorMessage = string.Empty;
+
         private UdpConnection udpConnection;
 
         protected override IEnumerator ExecuteLoad()
@@ -66,7 +71,11 @@ namespace FAST
                 localReceivePort = udpConnection.localReceivePort,
                 localSendPort = udpConnection.localSendPort,
                 remoteIpAddress = udpConnection.remoteIpAddress,
-                remotePort = udpConnection.remotePort
+                remotePort = udpConnection.remotePort,
+
+                prefixErrorMessage = prefixErrorMessage,
+                replacementErrorMessage = replacementErrorMessage,
+                suffixErrorMessage = suffixErrorMessage
             };
 
             if (settingsIndex >= 0 && Application.settings.udpConnectionSettings.Count > settingsIndex) {
@@ -76,6 +85,10 @@ namespace FAST
                 udpConnection.localSendPort = settings.localSendPort;
                 udpConnection.remoteIpAddress = settings.remoteIpAddress;
                 udpConnection.remotePort = settings.remotePort;
+
+                prefixErrorMessage = settings.prefixErrorMessage;
+                replacementErrorMessage = settings.replacementErrorMessage;
+                suffixErrorMessage = settings.suffixErrorMessage;
             }
 
             loadingTitle = $"Loading UDP network connection . . .";

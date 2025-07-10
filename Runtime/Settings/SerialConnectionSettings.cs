@@ -59,6 +59,13 @@ namespace FAST
 
         /// <summary>
         /// <b style="color: DarkCyan;">Settings, Code</b><br/>
+        /// The number of seconds to delay after opening a serial connection during startup.
+        /// Usually this is used with an Arduino to give it time to reset and run <b>setup()</b>.
+        /// </summary>
+        public float startupDelaySeconds = 0;
+
+        /// <summary>
+        /// <b style="color: DarkCyan;">Settings, Code</b><br/>
         /// A message that will be added before the <see cref="FAST.LoadingProgress"/> 
         /// error message at runtime.
         /// </summary>

@@ -29,6 +29,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
+using System.Linq;
 using UnityEngine;
 
 namespace FAST
@@ -138,33 +139,51 @@ namespace FAST
         /// </remarks>
         public virtual void Update()
         {
+            // TODO: All settings get cleared, but some settings don't get reassigned here because 
+            // they aren't fields on WebRequest, UdpConnection, or SerialConnection
             webRequestSettings.Clear();
-            foreach (WebRequest webRequest in Application.webRequests) {
-                WebRequestSettings webRequestSettings = new();
-                webRequestSettings.id = webRequest.id;
-                webRequestSettings.uri = webRequest.uri.OriginalString;
+            foreach (var (webRequest, webRequestLoader) in Application.webRequests.Zip(StartupManager.webRequestLoaders, Tuple.Create)) {
+                WebRequestSettings webRequestSettings = new() {
+                    id = webRequest.id,
+                    uri = webRequest.uri.OriginalString,
+
+                    prefixErrorMessage = webRequestLoader.prefixErrorMessage,
+                    replacementErrorMessage = webRequestLoader.replacementErrorMessage,
+                    suffixErrorMessage = webRequestLoader.suffixErrorMessage
+                };
 
                 this.webRequestSettings.Add(webRequestSettings);
             }
 
             udpConnectionSettings.Clear();
-            foreach (var udpConnection in Application.udpConnections) {
-                UdpConnectionSettings udpConnectionSettings = new();
-                udpConnectionSettings.id = udpConnection.id;
-                udpConnectionSettings.localReceivePort = udpConnection.localReceivePort;
-                udpConnectionSettings.localSendPort = udpConnection.localSendPort;
-                udpConnectionSettings.remoteIpAddress = udpConnection.remoteIpAddress;
-                udpConnectionSettings.remotePort = udpConnection.remotePort;
+            foreach (var (udpConnection, udpConnectionLoader) in Application.udpConnections.Zip(StartupManager.udpConnectionLoaders, Tuple.Create)) {
+                UdpConnectionSettings udpConnectionSettings = new() {
+                    id = udpConnection.id,
+                    localReceivePort = udpConnection.localReceivePort,
+                    localSendPort = udpConnection.localSendPort,
+                    remoteIpAddress = udpConnection.remoteIpAddress,
+                    remotePort = udpConnection.remotePort,
+
+                    prefixErrorMessage = udpConnectionLoader.prefixErrorMessage,
+                    replacementErrorMessage = udpConnectionLoader.replacementErrorMessage,
+                    suffixErrorMessage = udpConnectionLoader.suffixErrorMessage
+                };
 
                 this.udpConnectionSettings.Add(udpConnectionSettings);
             }
 
             serialConnectionSettings.Clear();
-            foreach (var serialConnection in Application.serialConnections) {
-                SerialConnectionSettings serialConnectionSettings = new();
-                serialConnectionSettings.id = serialConnection.id;
-                serialConnectionSettings.comPort = serialConnection.comPort;
-                serialConnectionSettings.baudRate = (int)serialConnection.baudRate;
+            foreach (var (serialConnection, serialConnectionLoader) in Application.serialConnections.Zip(StartupManager.serialConnectionLoaders, Tuple.Create)) {
+                SerialConnectionSettings serialConnectionSettings = new() {
+                    id = serialConnection.id,
+                    comPort = serialConnection.comPort,
+                    baudRate = (int)serialConnection.baudRate,
+
+                    startupDelaySeconds = serialConnectionLoader.startupDelaySeconds,
+                    prefixErrorMessage = serialConnectionLoader.prefixErrorMessage,
+                    replacementErrorMessage = serialConnectionLoader.replacementErrorMessage,
+                    suffixErrorMessage = serialConnectionLoader.suffixErrorMessage
+                };
 
                 this.serialConnectionSettings.Add(serialConnectionSettings);
             }

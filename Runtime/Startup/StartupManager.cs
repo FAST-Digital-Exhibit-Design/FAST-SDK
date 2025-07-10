@@ -81,7 +81,31 @@ namespace FAST
 		[SerializeField]
 		private StartupLoader[] startupLoaders;
 
-		private int indexToLoad;
+        /// <summary>
+        /// An array of all <see cref="FAST.SerialConnectionLoader"/>s loaded at startup.
+        /// </summary>
+        /// <remarks>
+        /// This is initialized by during startup after all loaders have completed.
+        /// </remarks>
+        public static SerialConnectionLoader[] serialConnectionLoaders = { };
+
+        /// <summary>
+        /// An array of all <see cref="FAST.UdpConnectionLoader"/>s loaded at startup.
+        /// </summary>
+        /// <remarks>
+        /// This is initialized by during startup after all loaders have completed.
+        /// </remarks>
+        public static UdpConnectionLoader[] udpConnectionLoaders = { };
+
+        /// <summary>
+        /// An array of all <see cref="FAST.WebRequestLoader"/>s loaded at startup.
+        /// </summary>
+        /// <remarks>
+        /// This is initialized by during startup after all loaders have completed.
+        /// </remarks>
+        public static WebRequestLoader[] webRequestLoaders = { };
+
+        private int indexToLoad;
 		private int doneLoadingCount;
 
         private void Start()
@@ -97,9 +121,13 @@ namespace FAST
 		{
 			// All loading is done
 			if (doneLoadingCount == StartupLoader.needToLoadCount) {
-				Application.udpConnections = GetComponentsInChildren<UdpConnection>(false);
+                serialConnectionLoaders = GetComponentsInChildren<SerialConnectionLoader>(false);
+                udpConnectionLoaders = GetComponentsInChildren<UdpConnectionLoader>(false);
+                webRequestLoaders = GetComponentsInChildren<WebRequestLoader>(false);
+
+                Application.udpConnections = GetComponentsInChildren<UdpConnection>(false);
 				Application.serialConnections = GetComponentsInChildren<SerialConnection>(false);
-				Application.webRequests = GetComponentsInChildren<WebRequestLoader>(false).Select(x => x.webRequest).ToArray();
+				Application.webRequests = webRequestLoaders.Select(x => x.webRequest).ToArray();
 				Application.WriteSettings();
 
 				Application.CopyPreviousLog();

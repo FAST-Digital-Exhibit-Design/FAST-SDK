@@ -67,20 +67,33 @@ namespace FAST
         /// </summary>
         [SerializeField]
         private int maxAttempts = 3;
-        
+
+        [Header("Loaded from settings")]
+        public string prefixErrorMessage = string.Empty;
+        public string replacementErrorMessage = string.Empty;
+        public string suffixErrorMessage = string.Empty;
+
         public WebRequest webRequest;
 
         protected override IEnumerator ExecuteLoad()
         {
             WebRequestSettings settings = new() {
                 uri = uri,
-                id = id 
+                id = id,
+
+                prefixErrorMessage = prefixErrorMessage,
+                replacementErrorMessage = replacementErrorMessage,
+                suffixErrorMessage = suffixErrorMessage
             };
             
             if (settingsIndex >= 0 && Application.settings.webRequestSettings.Count > settingsIndex) {
                 settings = Application.settings.webRequestSettings[settingsIndex];
                 uri = settings.uri;
                 id = settings.id;
+
+                prefixErrorMessage = settings.prefixErrorMessage;
+                replacementErrorMessage = settings.replacementErrorMessage;
+                suffixErrorMessage = settings.suffixErrorMessage;
             }
 
             webRequest = new WebRequest {

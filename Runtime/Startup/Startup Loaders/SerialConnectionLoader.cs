@@ -96,6 +96,14 @@ namespace FAST
         [SerializeField, NaughtyAttributes.ShowIf("searchMethod", SearchMethod.FirstNamed)]
         private string searchName;
 
+        [Header("Loaded from settings")]
+        [Range(0, 30)]
+        public float startupDelaySeconds = 0;
+        public string prefixErrorMessage = string.Empty;
+        public string replacementErrorMessage = string.Empty;
+        public string suffixErrorMessage = string.Empty;
+
+
         private const int kMinPortNumber = 3;
         private const int kMaxPortNumber = 256;
 
@@ -113,7 +121,12 @@ namespace FAST
             settings = new() {
                 comPort = serialConnection.comPort,
                 baudRate = (int)serialConnection.baudRate,
-                id = serialConnection.id
+                id = serialConnection.id,
+
+                startupDelaySeconds = startupDelaySeconds,
+                prefixErrorMessage = prefixErrorMessage,
+                replacementErrorMessage = replacementErrorMessage,
+                suffixErrorMessage = suffixErrorMessage
             };
 
             if (settingsIndex >= 0 && Application.settings.serialConnectionSettings.Count > settingsIndex) {
@@ -122,6 +135,11 @@ namespace FAST
                 serialConnection.comPort = settings.comPort;
                 bool isBaudRateDefined = Enum.IsDefined(typeof(SerialConnection.BaudRates), settings.baudRate);
                 serialConnection.baudRate = (SerialConnection.BaudRates) (isBaudRateDefined ? settings.baudRate : 9600);
+
+                startupDelaySeconds = settings.startupDelaySeconds;
+                prefixErrorMessage = settings.prefixErrorMessage;
+                replacementErrorMessage = settings.replacementErrorMessage;
+                suffixErrorMessage = settings.suffixErrorMessage;
             }
 
             loadingTitle = $"Loading serial device . . .";
@@ -170,6 +188,13 @@ namespace FAST
                 Debug.LogError($"\nERROR\n{errorTitle}\n{errorMessage}\n");
                 errorEvent.Invoke(errorTitle, errorMessage);
                 yield break;
+            } else {
+                loadingMessage = $"Connected to {serialConnection.id} on COM{serialConnection.comPort} " +
+                    $"with baud rate {(int)serialConnection.baudRate}" +
+                    $"\nWaiting for delay of {settings.startupDelaySeconds} seconds";
+                loadingEvent.Invoke(loadingTitle, loadingMessage);
+
+                yield return new WaitForSecondsRealtime(settings.startupDelaySeconds);
             }
 
             successEvent.Invoke();
