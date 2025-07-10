@@ -80,16 +80,6 @@ namespace FAST
         private bool _isRunning = false;
 
         /// <summary>
-        /// Indicates the amount of the playlist that has been played so far.
-        /// </summary>
-        /// <remarks>
-        /// The progress range is normalized to [0.0, 1.0]
-        /// </remarks>
-        public float Progress { get => _progress; }
-        [SerializeField, Range(0f, 1f)]
-        private float _progress = 0f;
-
-        /// <summary>
         /// Indicates the <c>AudioPlayer</c> playback is paused if <see langword="true"/>.
         /// </summary>
         public bool IsPaused { get => _isPaused; }
@@ -113,6 +103,17 @@ namespace FAST
             audioSource.UnPause();
             _isPaused = false;
         }
+
+        /// <summary>
+        /// Indicates the amount of the playlist that has been played so far.
+        /// </summary>
+        /// <remarks>
+        /// The progress range is normalized to [0.0, 1.0]
+        /// </remarks>
+        public float Progress { get => _progress; }
+        [SerializeField, Range(0f, 1f)]
+        private float _progress = 0f;
+
 
         /// <summary>
         /// <b style="color: DarkCyan;">Inspector, Code</b><br/>
