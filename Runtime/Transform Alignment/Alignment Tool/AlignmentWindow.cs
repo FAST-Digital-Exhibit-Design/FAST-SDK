@@ -102,7 +102,7 @@ namespace FAST
             selectedIndex = -1;
             selectedTransform = null;
 
-            // If there anren't any AlignmentTransforms, the Alignment Tools will be disabled in Start()
+            // If there aren't any AlignmentTransforms, the Alignment Tools will be disabled in Start()
             alignmentTransforms = FindObjectsByType<AlignmentTransform>(FindObjectsInactive.Include, FindObjectsSortMode.None);            
         }
         protected void Start()
@@ -120,6 +120,9 @@ namespace FAST
             }
             else {
                 windowCanvas.transform.parent.gameObject.SetActive(false);
+                string warningTitle = "AlignmentTransforms not found!";
+                string warningMessage = "No AlignmentTransforms were found in the scene, so the Alignment Tool will be disabled.";
+                Debug.LogWarning($"[WARNING] {warningTitle}\n{warningMessage}\n");
             }
         }
 
