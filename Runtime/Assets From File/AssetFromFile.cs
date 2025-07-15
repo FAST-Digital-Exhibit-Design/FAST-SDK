@@ -240,6 +240,37 @@ namespace FAST
         abstract public void Load(string language);
 
         /// <summary>
+        /// Looks up the asset from <see cref="FAST.Application.assets"/> dictionary using 
+        /// <c>language</c> and <see cref="FAST.AssetFromFile.fileName"/> to see if the file exists.
+        /// </summary>
+        /// <param name="language">The language of the asset to check.</param>
+        public bool IsAssetAvailable(string language)
+        {
+            bool isAssetAvailable = false;
+
+            if (isSharedByAllLanguages) {
+                language = kSharedLanguage;
+            }
+
+            var assets = Application.assets;
+            if (assets.ContainsKey(language)) {
+                UpdateFileName(language);
+
+                if (fileName.Contains("#")) {
+                    int numDigits = baseFileName.Length - baseFileName.Replace("#", "").Length;
+                    string kIndexTag = new('#', numDigits);
+                    int index = 0;
+                    string paddedIndex = index.ToString($"D{numDigits}");
+                    fileName = fileName.Replace(kIndexTag, paddedIndex);
+                }
+
+                isAssetAvailable = assets[language].ContainsKey(fileName);
+            }
+
+            return isAssetAvailable;
+        }
+
+        /// <summary>
         /// Updates <see cref="FAST.AssetFromFile.fileName"/> using <c>language</c>,  <see cref="FAST.AssetSettings"/>, 
         /// <see cref="FAST.AssetFromFile.prefixFileName"/>, <see cref="FAST.AssetFromFile.baseFileName"/>, 
         /// and <see cref="FAST.AssetFromFile.suffixFileName"/>.
