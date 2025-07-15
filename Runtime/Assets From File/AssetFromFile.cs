@@ -268,11 +268,23 @@ namespace FAST
             }
             else {
                 fileName += suffixFileName;
-                string errorTitle = "File extension missing!";
-                string errorMessage = $"All asset filenames must be specified with an extension. " +
-                    $"The game object {gameObject.name} with component {this.GetType().Name} does not have an extension.";
-                Debug.LogError($"ERROR\n{errorTitle}\n{errorMessage}\n");
+                LogFileExtensionMissingError();
             }
+        }
+
+        /// <summary>
+        /// Call this to log an error when a file extension isn't specified for the <see cref="FAST.AssetFromFile.baseFileName"/>.
+        /// </summary>
+        private void LogFileExtensionMissingError()
+        {
+            if (string.IsNullOrWhiteSpace(baseFileName)) {
+                return;
+            }
+
+            string errorTitle = "File extension missing!";
+            string errorMessage = $"All asset filenames must be specified with an extension. " +
+                $"The game object {gameObject.name} with component {this.GetType().Name} does not have an extension.";
+            Debug.LogError($"ERROR\n{errorTitle}\n{errorMessage}\n");
         }
 
         /// <summary>
@@ -280,6 +292,10 @@ namespace FAST
         /// </summary>
         protected void LogAssetNotLoadedError()
         {
+            if (string.IsNullOrWhiteSpace(baseFileName)) {
+                return;
+            }
+
             string errorTitle = "Asset not loaded!";
             string errorMessage = $"The {fileName} asset could not be loaded. Usually this is because the file cannot be found. " +
                 $"Check the {this.GetType().Name} component on the {gameObject.name} game object to verify that the asset's file name matches the File Name property. " +
