@@ -120,12 +120,6 @@ namespace FAST
         protected override IEnumerator ExecuteLoad()
         {
             serialConnection = GetComponent<SerialConnection>();
-#if FAST_WIN
-            if (!serialConnection.port.Contains("COM")) {
-                serialConnection.port = "COM" + serialConnection.port;
-            }
-#endif
-
             settings = new() {
                 port = serialConnection.port,
                 baudRate = (int)serialConnection.baudRate,
@@ -139,12 +133,6 @@ namespace FAST
 
             if (settingsIndex >= 0 && Application.settings.serialConnectionSettings.Count > settingsIndex) {
                 settings = Application.settings.serialConnectionSettings[settingsIndex];
-#if FAST_WIN
-                if (!settings.port.Contains("COM")) {
-                    settings.port = "COM" + settings.port;
-                    FAST.Application.WriteSettings();
-                }
-#endif
                 serialConnection.id = settings.id;
                 serialConnection.port = settings.port;
                 bool isBaudRateDefined = Enum.IsDefined(typeof(SerialConnection.BaudRates), settings.baudRate);
@@ -175,7 +163,7 @@ namespace FAST
                 }
             }
 
-#if FAST_WIN
+#if (UNITY_STANDALONE_WIN && UNITY_EDITOR_WIN) || (UNITY_STANDALONE_WIN && !UNITY_EDITOR)
             // If the serial port specified in the settings didn't work, try searching for the correct one
             if (!isConnected) {
                 if (searchMethod.Equals(SearchMethod.FirstAvailable)) {
@@ -222,7 +210,7 @@ namespace FAST
             successEvent.Invoke();
         }
 
-#if FAST_WIN
+#if (UNITY_STANDALONE_WIN && UNITY_EDITOR_WIN) || (UNITY_STANDALONE_WIN && !UNITY_EDITOR)
         private IEnumerator FindFirstAvailablePort()
         {
             for (int i = 0; i < maxAttempts; i++) {

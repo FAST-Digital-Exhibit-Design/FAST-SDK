@@ -139,15 +139,6 @@ namespace FAST
         private Thread thread;
         private bool isThreadRunning = false;
 
-        private void Awake()
-        {
-#if FAST_WIN
-            if (!port.Contains("COM")) {
-                port = "COM" + port;
-            }
-#endif
-        }
-
         /// <summary>
         /// Gets the list of data recieved since the last read.
         /// </summary>
@@ -185,11 +176,6 @@ namespace FAST
         {
             bool isConnected = false;
             try {
-#if FAST_WIN
-                if (!port.Contains("COM")) {
-                    port = "COM" + port;
-                }
-#endif
                 serialPort = new(port, (int)baudRate);
                 serialPort.ReadTimeout = readTimeout;
                 serialPort.WriteTimeout = writeTimeout;
