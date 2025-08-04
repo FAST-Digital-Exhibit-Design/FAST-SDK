@@ -27,7 +27,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Xml;
 using System.Xml.Serialization;
-using UnityEngine;
 
 namespace FAST
 {
@@ -47,9 +46,9 @@ namespace FAST
 
         /// <summary>
         /// <b style="color: DarkCyan;">Settings, Code</b><br/>
-        /// The COM port to use for this <see cref="FAST.SerialConnection"/>.
+        /// The port to use for this <see cref="FAST.SerialConnection"/>.
         /// </summary>
-        public int comPort = 0;
+        public string port = "0";
 
         /// <summary>
         /// <b style="color: DarkCyan;">Settings, Code</b><br/>

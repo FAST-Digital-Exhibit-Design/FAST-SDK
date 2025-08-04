@@ -174,9 +174,14 @@ namespace FAST
 
             serialConnectionSettings.Clear();
             foreach (var (serialConnection, serialConnectionLoader) in Application.serialConnections.Zip(StartupManager.serialConnectionLoaders, Tuple.Create)) {
+#if FAST_WIN
+                if (!serialConnection.port.Contains("COM")) {
+                    serialConnection.port = "COM" + serialConnection.port;
+                }
+#endif
                 SerialConnectionSettings serialConnectionSettings = new() {
                     id = serialConnection.id,
-                    comPort = serialConnection.comPort,
+                    port = serialConnection.port,
                     baudRate = (int)serialConnection.baudRate,
 
                     startupDelaySeconds = serialConnectionLoader.startupDelaySeconds,

@@ -169,7 +169,12 @@ namespace FAST
                     Debug.Log($"{loadingMessage}");
                     loadingEvent.Invoke(loadingTitle, loadingMessage);
 
-                    WWW fileRequest = new WWW("file:///" + filePath);
+#if FAST_WIN          
+                    string filePrefix = "file:///";
+#elif FAST_OSX || FAST_LINUX
+                    string filePrefix = "file://";
+#endif
+                    WWW fileRequest = new WWW(filePrefix + filePath);
                     yield return fileRequest;
 
                     if (fileRequest.error != null) {
@@ -207,7 +212,12 @@ namespace FAST
                     Debug.Log($"{loadingMessage}");
                     loadingEvent.Invoke(loadingTitle, loadingMessage);
 
-                    WWW fileRequest = new WWW("file:///" + filePath);
+#if FAST_WIN          
+                    string filePrefix = "file:///";
+#elif FAST_OSX || FAST_LINUX
+                    string filePrefix = "file://";
+#endif
+                    WWW fileRequest = new WWW(filePrefix + filePath);
                     yield return fileRequest;
 
                     if (fileRequest.error != null) {

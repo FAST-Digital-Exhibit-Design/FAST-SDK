@@ -38,21 +38,24 @@ namespace FAST
     public class SerialConnectionLoader : StartupLoader
     {
         /// <summary>
-        /// Indicates what search method should be used if connecting to the specified COM port fails.
+        /// Indicates what search method should be used if connecting to the specified serial port fails. Some options are only available on Windows.
         /// </summary>
         enum SearchMethod {
             /// <summary>
+            /// <b style="color: DarkCyan;">Windows, MacOS, Linux</b><br/>
             /// Other ports won't be searched.
             /// </summary>
             None,
 
             /// <summary>
+            /// <b style="color: DarkCyan;">Windows</b><br/>
             /// The search will start on COM3 and increment by 1 until a connection is made 
             /// or COM256 is reached.
             /// </summary>
             FirstAvailable,
 
             /// <summary>
+            /// <b style="color: DarkCyan;">Windows</b><br/>
             /// A lookup table of serial device name and port number will be made. Then the table 
             /// will be searched for the first device name that matches the specified search name.
             /// </summary>
@@ -73,22 +76,22 @@ namespace FAST
 
         /// <summary>
         /// <b style="color: DarkCyan;">Inspector</b><br/>
-        /// The number of times the specified COM port will be tried before searching for another connected COM port. 
-        /// Also, the number of times that the COM port found in the search will be tried before failing.
+        /// The number of times the specified serial port will be tried before searching for another connected port. 
+        /// Also, the number of times that the port found in the search will be tried before failing.
         /// </summary>
         [SerializeField]
         private int maxAttempts = 3;
 
         /// <summary>
         /// <b style="color: DarkCyan;">Inspector</b><br/>
-        /// The search method that will be used if connecting to the specified COM port fails.
+        /// The search method that will be used if connecting to the specified serial port fails.
         /// </summary>
         [SerializeField]
         private SearchMethod searchMethod;
 
         /// <summary>
         /// <b style="color: DarkCyan;">Inspector</b><br/>
-        /// The name of the serial device to search for if connecting to the specified COM port fails.
+        /// The name of the serial device to search for if connecting to the specified serial port fails.
         /// </summary>
         /// <remarks>
         /// This only applies to <see cref="FAST.SerialConnectionLoader.SearchMethod.FirstNamed"/>.
@@ -117,9 +120,14 @@ namespace FAST
         protected override IEnumerator ExecuteLoad()
         {
             serialConnection = GetComponent<SerialConnection>();
+#if FAST_WIN
+            if (!serialConnection.port.Contains("COM")) {
+                serialConnection.port = "COM" + serialConnection.port;
+            }
+#endif
 
             settings = new() {
-                comPort = serialConnection.comPort,
+                port = serialConnection.port,
                 baudRate = (int)serialConnection.baudRate,
                 id = serialConnection.id,
 
@@ -131,8 +139,14 @@ namespace FAST
 
             if (settingsIndex >= 0 && Application.settings.serialConnectionSettings.Count > settingsIndex) {
                 settings = Application.settings.serialConnectionSettings[settingsIndex];
+#if FAST_WIN
+                if (!settings.port.Contains("COM")) {
+                    settings.port = "COM" + settings.port;
+                    FAST.Application.WriteSettings();
+                }
+#endif
                 serialConnection.id = settings.id;
-                serialConnection.comPort = settings.comPort;
+                serialConnection.port = settings.port;
                 bool isBaudRateDefined = Enum.IsDefined(typeof(SerialConnection.BaudRates), settings.baudRate);
                 serialConnection.baudRate = (SerialConnection.BaudRates) (isBaudRateDefined ? settings.baudRate : 9600);
 
@@ -145,10 +159,10 @@ namespace FAST
             loadingTitle = $"Loading serial device . . .";
             Debug.Log($"\n{loadingTitle}");
 
-            // Try the COM port specified in the settings
+            // Try the serial port specified in the settings
             isConnected = false;
             for (int i = 0; i < maxAttempts; i++) {
-                loadingMessage = $"{serialConnection.id} on COM{serialConnection.comPort} " +
+                loadingMessage = $"{serialConnection.id} on {serialConnection.port} " +
                     $"with baud rate {(int)serialConnection.baudRate}" +
                     $"\nAttempt {i + 1} of {maxAttempts}";
                 loadingEvent.Invoke(loadingTitle, loadingMessage);
@@ -161,7 +175,8 @@ namespace FAST
                 }
             }
 
-            // If the COM port specified in the settings didn't work, try searching for the correct one
+#if FAST_WIN
+            // If the serial port specified in the settings didn't work, try searching for the correct one
             if (!isConnected) {
                 if (searchMethod.Equals(SearchMethod.FirstAvailable)) {
                     yield return FindFirstAvailablePort();
@@ -170,12 +185,19 @@ namespace FAST
                     yield return FindFirstNamedPort();
                 }
             }
+#else
+            if (!searchMethod.Equals(SearchMethod.None)) {
+                errorTitle = "Serial port search method not supported!";
+                errorMessage = $"The serial port search method {searchMethod} is only supported on Windows Standalone build targets. Reverting to search method {SearchMethod.None}.";
+                Debug.LogWarning($"[WARNING] {errorTitle}\n{errorMessage}\n");
+            }
+#endif
 
-            // If searching for the COM port didn't work, just give up and show an error
+            // If searching for the serial port didn't work or isn't supported, just give up and show an error
             if (!isConnected) {
                 errorTitle = "Connection failed!";
                 if (string.IsNullOrEmpty(settings.replacementErrorMessage)) {
-                    errorMessage = $"Cannot connect to the serial device {settings.id} on COM{settings.comPort} " +
+                    errorMessage = $"Cannot connect to the serial device {settings.id} on {settings.port} " +
                         $"with baud rate {settings.baudRate}.";
                     if (!searchMethod.Equals(SearchMethod.None)) {
                         errorMessage += "\nAll available ports were searched, and no connection was made.";
@@ -189,7 +211,7 @@ namespace FAST
                 errorEvent.Invoke(errorTitle, errorMessage);
                 yield break;
             } else {
-                loadingMessage = $"Connected to {serialConnection.id} on COM{serialConnection.comPort} " +
+                loadingMessage = $"Connected to {serialConnection.id} on {serialConnection.port} " +
                     $"with baud rate {(int)serialConnection.baudRate}" +
                     $"\nWaiting for delay of {settings.startupDelaySeconds} seconds";
                 loadingEvent.Invoke(loadingTitle, loadingMessage);
@@ -200,6 +222,7 @@ namespace FAST
             successEvent.Invoke();
         }
 
+#if FAST_WIN
         private IEnumerator FindFirstAvailablePort()
         {
             for (int i = 0; i < maxAttempts; i++) {
@@ -212,15 +235,15 @@ namespace FAST
                 Debug.Log($"Searching for first available port" +
                     $"\nAttempt {i + 1} of {maxAttempts}");
 
-                for (int n = kMinPortNumber; n <= kMaxPortNumber; n++) {
-                    serialConnection.comPort = n;
-                    loadingMessage = $"Searching for first available port on COM{serialConnection.comPort}" +
+                for (int comPort = kMinPortNumber; comPort <= kMaxPortNumber; comPort++) {
+                    serialConnection.port = "COM" + comPort.ToString();
+                    loadingMessage = $"Searching for first available port on {serialConnection.port}" +
                         $"\nAttempt {i + 1} of {maxAttempts}";
                     loadingEvent.Invoke(loadingTitle, loadingMessage);
                     yield return new WaitForSecondsRealtime(kSearchDelay);
 
                     if (serialConnection.Open()) {
-                        settings.comPort = serialConnection.comPort;
+                        settings.port = serialConnection.port;
                         Application.WriteSettings();
                         isConnected = true;
                         break;
@@ -293,10 +316,10 @@ namespace FAST
 
                 int comPort = GetFirstPortMatchingName(searchName);
                 if (comPort > 0) {
-                    serialConnection.comPort = comPort;
+                    serialConnection.port = "COM" + comPort.ToString();
 
                     if (serialConnection.Open()) {
-                        settings.comPort = serialConnection.comPort;
+                        settings.port = serialConnection.port;
                         Application.WriteSettings();
                         isConnected = true;
                         break;
@@ -307,5 +330,6 @@ namespace FAST
             Debug.Log($"{serialConnection.id} cannot be found");
             Debug.Log("Available serial ports:\n" + string.Join(Environment.NewLine, portAssignments));
         }
+#endif
     }
 }

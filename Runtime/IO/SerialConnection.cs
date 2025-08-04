@@ -67,13 +67,12 @@ namespace FAST
 
         /// <summary>
         /// <b style="color: DarkCyan;">Settings, Inspector, Code</b><br/>
-        /// The COM port to use for serial communication.
+        /// The port to use for serial communication.
         /// </summary>
         /// <remarks>
         /// Loaded from <see cref="FAST.SerialConnectionSettings"/> at runtime.
         /// </remarks>
-        [Range(1, 256)]
-        public int comPort = 1;
+        public string port = "1";
 
         /// <summary>
         /// <b style="color: DarkCyan;">Settings, Inspector, Code</b><br/>
@@ -140,6 +139,15 @@ namespace FAST
         private Thread thread;
         private bool isThreadRunning = false;
 
+        private void Awake()
+        {
+#if FAST_WIN
+            if (!port.Contains("COM")) {
+                port = "COM" + port;
+            }
+#endif
+        }
+
         /// <summary>
         /// Gets the list of data recieved since the last read.
         /// </summary>
@@ -177,7 +185,12 @@ namespace FAST
         {
             bool isConnected = false;
             try {
-                serialPort = new("COM" + comPort.ToString(), (int)baudRate);
+#if FAST_WIN
+                if (!port.Contains("COM")) {
+                    port = "COM" + port;
+                }
+#endif
+                serialPort = new(port, (int)baudRate);
                 serialPort.ReadTimeout = readTimeout;
                 serialPort.WriteTimeout = writeTimeout;
 
