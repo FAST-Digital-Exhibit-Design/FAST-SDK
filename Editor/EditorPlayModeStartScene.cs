@@ -32,8 +32,8 @@ namespace FAST
     [InitializeOnLoad]
     public class EditorPlayModeStartScene
     {
-        private const string kAutoLoadMenuItem = "FAST/Auto-Load Start Scene on Play (Scene 0)";
-        private const string kStartSceneMenuItem = "FAST/Change Start Scene (Scene 0)...";
+        private const string kAutoLoadMenuItem = "FAST/Auto-Load Startup Scene on Play (Scene 0)";
+        private const string kChangeScenesMenuItem = "FAST/Change Startup Scene (Scene 0) or Activity Scene (Scene 1)...";
         private const string kEditorPrefAutoLoadStart = "LoadStartSceneOnPlay";
 
         static EditorPlayModeStartScene()
@@ -53,7 +53,7 @@ namespace FAST
             SetPlayModeStartScene(isLogging: true);
         }
 
-        [MenuItem(kStartSceneMenuItem, priority = 11)]
+        [MenuItem(kChangeScenesMenuItem, priority = 11)]
         static void ChangeStartScene()
         {
             EditorWindow.GetWindow(typeof(BuildPlayerWindow));

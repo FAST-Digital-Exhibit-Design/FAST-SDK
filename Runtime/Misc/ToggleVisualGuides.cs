@@ -23,19 +23,27 @@
 // If not, see <https://opensource.org/license/MIT>.
 //=============================================================================
 
-using UnityEditor;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace FAST
 {
-    public class RuntimeAfterStartupScene 
+    public class ToggleVisualGuides : MonoBehaviour
     {
-        private const string kAfterStartupSceneMenuItem = "FAST/Change After Startup Scene (Scene 1)...";
+        [SerializeField]
+        private bool isInactiveOnStart = false;
 
-        [MenuItem(kAfterStartupSceneMenuItem, priority = 12)]
-        static void ChangeAfterStartupScene()
+        private IEnumerator Start()
         {
-            EditorWindow.GetWindow(typeof(BuildPlayerWindow));
+            // This allows the Guides to be initialized and shown for one frame if used with
+            // Alignment Rect Transform, so that the Alignment Tool can visualize the Guides
+            // whether they are visible or not.
+            yield return null;
+
+            if (isInactiveOnStart) {
+                gameObject.SetActive(false);
+            }
         }
     }
 }
