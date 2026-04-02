@@ -108,23 +108,6 @@ namespace FAST
         public StartupSuccessEvent successEvent;
 
         /// <summary>
-        /// The number of <see cref="FAST.StartupLoader"/>s to execute on startup.
-        /// </summary>
-        /// <remarks>
-        /// This is used by the <see cref="FAST.StartupManager"/> to determine when resource 
-        /// and dependency loading is done.
-        /// </remarks>
-        public static int needToLoadCount = 0;
-
-        /// <summary>
-        /// The default behavior is to increment the <see cref="FAST.StartupLoader.needToLoadCount"/>.
-        /// </summary>
-        protected virtual void Awake()
-        {
-            needToLoadCount++;
-        }
-
-        /// <summary>
         /// Runs the <see cref="FAST.StartupLoader.ExecuteLoad()"/> 
         /// <c style="color:DarkRed;"><see cref="Coroutine"/></c> 
         /// </summary>

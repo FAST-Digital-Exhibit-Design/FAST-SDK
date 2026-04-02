@@ -119,8 +119,8 @@ namespace FAST
 
 		private void StartLoading()
 		{
-			// All loading is done
-			if (doneLoadingCount == StartupLoader.needToLoadCount) {
+            // All loading is done
+            if (doneLoadingCount == startupLoaders.Length) {
                 serialConnectionLoaders = GetComponentsInChildren<SerialConnectionLoader>(false);
                 udpConnectionLoaders = GetComponentsInChildren<UdpConnectionLoader>(false);
                 webRequestLoaders = GetComponentsInChildren<WebRequestLoader>(false);
@@ -131,14 +131,17 @@ namespace FAST
 				Application.WriteSettings();
 
 				Application.CopyPreviousLog();
-				AsyncOperation asyncLoadScene = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
-				asyncLoadScene.completed += (asyncLoadScene) =>
-				{
-					Application.InitializeLanguage();
-					successEvent.Invoke();
-					successEvent.RemoveAllListeners();
-				};
-			}
+
+                if (SceneManager.sceneCount > 1) {
+                    AsyncOperation asyncLoadScene = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
+                    asyncLoadScene.completed += (asyncLoadScene) => {
+                        OnStartupDone();
+                    };
+                }
+                else {
+                    OnStartupDone();
+                }
+            }
 			// Load the next resource
 			else if (indexToLoad < startupLoaders.Length) {
 				startupLoaders[indexToLoad++].Load();
@@ -147,10 +150,17 @@ namespace FAST
 		public void DoneLoading()
 		{
 			doneLoadingCount++;
-			float loadingPercentage = 100f * (float)doneLoadingCount / (float)StartupLoader.needToLoadCount;
+			float loadingPercentage = 100f * (float)doneLoadingCount / (float)startupLoaders.Length;
 			loadingEvent.Invoke((int)loadingPercentage);
 
 			StartLoading();
 		}
-	}
+
+        private void OnStartupDone()
+        {
+            Application.InitializeLanguage();
+            successEvent.Invoke();
+            successEvent.RemoveAllListeners();
+        }
+    }
 }

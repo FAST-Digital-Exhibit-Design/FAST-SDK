@@ -197,9 +197,10 @@ namespace FAST
             return typeof(BaseSettings) == type.BaseType;
         }
 
-        public void OnAfterDeserialize() => GetScriptName();
+        // Removed OnValidate() and OnAfterDeserialize() because they clear the serialized value for
+        // scriptName when the containing scene is loaded from an AssetBundle. Loading scenes from an
+        // AssetBundle is used for Life in the Forest kiosks.
         public void OnBeforeSerialize() => GetScriptName();
-        public void OnValidate() => GetScriptName();
         private void GetScriptName()
         {
             if (settingsScript == null) {
