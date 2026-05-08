@@ -55,8 +55,8 @@ namespace FAST
         private MonoScript settingsScript;
 #endif
 
-        [SerializeField, HideInInspector]
-        private string scriptName;
+        [SerializeField, NaughtyAttributes.ReadOnly]
+        private string settingsName;
 
         /// <summary>
         /// <b style="color: DarkCyan;">Settings, Runtime</b><br/>
@@ -108,7 +108,7 @@ namespace FAST
 
             // Read the activity settings
             Application.settingsPath = Path.Combine(Application.assetsDirectory, Application.skin, $"{Application.skin}-settings.xml");
-            Application.settings = Activator.CreateInstance("Assembly-CSharp", scriptName).Unwrap();
+            Application.settings = Activator.CreateInstance("Assembly-CSharp", settingsName).Unwrap();
             settingsPath = Application.settingsPath;
 
             loadingTitle = "Loading settings . . .";
@@ -191,23 +191,20 @@ namespace FAST
         private bool IsValidSettings(MonoScript script)
         {
             if (script == null) {
+                settingsName = string.Empty;
                 return false;
             }
-            Type type = Type.GetType($"{script.name}, Assembly-CSharp");
-            return typeof(BaseSettings) == type.BaseType;
-        }
 
-        // Removed OnValidate() and OnAfterDeserialize() because they clear the serialized value for
-        // scriptName when the containing scene is loaded from an AssetBundle. Loading scenes from an
-        // AssetBundle is used for Life in the Forest kiosks.
-        public void OnBeforeSerialize() => GetScriptName();
-        private void GetScriptName()
-        {
-            if (settingsScript == null) {
-                scriptName = "";
-                return;
+            Type type = Type.GetType($"{script.name}, Assembly-CSharp");
+            if (type == null) {
+                settingsName = string.Empty;
+                return false;
             }
-            scriptName = settingsScript.name;
+
+            bool isValid = typeof(BaseSettings) == type.BaseType;
+            settingsName = isValid ? settingsScript.name : string.Empty;
+
+            return isValid;
         }
 #endif
     }
