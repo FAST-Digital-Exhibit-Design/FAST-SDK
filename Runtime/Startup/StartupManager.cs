@@ -132,7 +132,7 @@ namespace FAST
 
 				Application.CopyPreviousLog();
 
-                if (SceneManager.sceneCount > 1) {
+                if (SceneManager.sceneCountInBuildSettings > 1) {
                     AsyncOperation asyncLoadScene = SceneManager.LoadSceneAsync(1, LoadSceneMode.Additive);
                     asyncLoadScene.completed += (asyncLoadScene) => {
                         OnStartupDone();
