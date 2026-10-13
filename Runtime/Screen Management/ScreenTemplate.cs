@@ -72,6 +72,8 @@ namespace FAST
         /// </summary>
         protected Dictionary<string, AudioClipFromFile> audioLUT = new();
 
+        protected Coroutine playCoroutine = null;
+
         /// <summary>
         /// Default behavior is to get all the <see cref="FAST.AudioClipFromFile"/>s 
         /// that are children of this <c style="color:DarkRed;"><see cref="GameObject"/></c> 
@@ -105,6 +107,7 @@ namespace FAST
                 audioPlayer.ClearPlaylist();
             }
             StopAllCoroutines();
+            playCoroutine = null;
         }
 
         /// <summary>
@@ -113,8 +116,11 @@ namespace FAST
         /// </summary>
         public virtual void PlayScreen()
         {
-            StopAllCoroutines();
-            StartCoroutine(PlayScreenCoroutine());
+            if (playCoroutine != null) {
+                StopCoroutine(playCoroutine);
+                playCoroutine = null;
+            }
+            playCoroutine = StartCoroutine(PlayScreenCoroutine());
         }
 
         // <summary>
@@ -126,6 +132,7 @@ namespace FAST
             _isPlaying = true;
             yield return PlayScreenAnimation();
             _isPlaying = false;
+            playCoroutine = null;
         }
 
         /// <summary>

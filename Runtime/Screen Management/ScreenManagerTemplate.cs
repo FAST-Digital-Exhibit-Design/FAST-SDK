@@ -47,6 +47,19 @@ namespace FAST
     {
         /// <summary>
         /// <b style="color: DarkCyan;">Inspector, Code</b><br/>
+        /// A list of all the screen states as <see cref="FAST.ScreenTemplate"/>s.
+        /// </summary>
+        /// <remarks>
+        /// This list exists to serialize/deserialize <see cref="FAST.ScreenManagerTemplate{T}.screens"/> 
+        /// so it can be edited in the Inspector. Also, the first screen in the list is set as the 
+        /// <see cref="FAST.ScreenManagerTemplate{T}.currentScreenName"/> on <see cref="FAST.ScreenManagerTemplate{T}.Awake()"/>.
+        /// </remarks>
+        [SerializeField,
+         Tooltip("The first screen in the list is set as the Current Screen Name on Awake().")]
+        protected NamedObject<T>[] screensList;
+
+        /// <summary>
+        /// <b style="color: DarkCyan;">Inspector, Code</b><br/>
         /// A reference to a <see cref="FAST.AudioPlayer"/> that will be used for 
         /// playback of sequential audio that isn't specific to any screen.
         /// </summary>
@@ -72,19 +85,6 @@ namespace FAST
         [SerializeField,
          Tooltip("This is set to the first screen in the Screens List on Awake().")]
         protected string currentScreenName;
-
-        /// <summary>
-        /// <b style="color: DarkCyan;">Inspector, Code</b><br/>
-        /// A list of all the screen states as <see cref="FAST.ScreenTemplate"/>s.
-        /// </summary>
-        /// <remarks>
-        /// This list exists to serialize/deserialize <see cref="FAST.ScreenManagerTemplate{T}.screens"/> 
-        /// so it can be edited in the Inspector. Also, the first screen in the list is set as the 
-        /// <see cref="FAST.ScreenManagerTemplate{T}.currentScreenName"/> on <see cref="FAST.ScreenManagerTemplate{T}.Awake()"/>.
-        /// </remarks>
-        [SerializeField,
-         Tooltip("The first screen in the list is set as the Current Screen Name on Awake().")]
-        protected NamedObject<T>[] screensList;
 
         /// <summary>
         /// The <see cref="FAST.ScreenManagerTemplate{T}.screensList"/> converted to a 
